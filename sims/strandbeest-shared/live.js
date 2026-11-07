@@ -3,6 +3,7 @@
 // on the wheel. Left alone it plays the film's script as an auto tour with the operator's cursor, looped; a click,
 // drag, wheel or key hands control to the visitor, and 25 s of quiet hands it back. Wind drives the crank here too:
 // theta is integrated frame by frame, and the console reads its last seconds from a short history.
+import {installFullscreen} from '../kit/fullscreen.js';
 import {warmComposer} from '../kit/warm.js';
 import {legAt, legZ, phaseOf, S} from './beast.js';
 import {createConsole, VIEW_KEYS, WIND_MAX} from './console.js';
@@ -80,6 +81,7 @@ export function runLive() {
     st.resize(W, H, clamp((devicePixelRatio || 1) * scale, 0.75, TIERS[tier].pr));
   };
   addEventListener('resize', fit);
+  installFullscreen();
   fit();
   fitReady = true;
   const toStage = (cx, cy) => {

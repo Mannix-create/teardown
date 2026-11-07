@@ -2,6 +2,7 @@
 // start a sequence, the play button pauses it, the timeline scrubs it, SPEED sets its pace; the six views, the six
 // display modes, an orbit you drag and a zoom on the wheel. Left alone it plays the film's script as an auto tour with
 // the operator's cursor, looped; a click, drag, wheel or key hands control to the visitor, 25 s of quiet hands it back.
+import {installFullscreen} from '../kit/fullscreen.js';
 import {warmComposer} from '../kit/warm.js';
 import {createConsole, DISPLAY, VIEWS} from './console.js';
 import {camAt, displayAt, DURATION, makeConsoleFrame, makeCursor, mechAt, SCRIPT, seqAt, viewAt, VIEW_FN} from './film.js';
@@ -75,6 +76,7 @@ export function runLive() {
   };
   applyTier();
   addEventListener('resize', fit);
+  installFullscreen();
   const toStage = (cx, cy) => {
     const r = app.getBoundingClientRect();
     return [(cx - r.left) / scale, (cy - r.top) / scale];

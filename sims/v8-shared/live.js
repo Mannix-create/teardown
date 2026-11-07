@@ -3,6 +3,7 @@
 // the firing order to pick the tracked cylinder, PAUSE and ±15°, the engine speed and playback sliders, an orbit you
 // drag, a zoom on the wheel, H to hide the overlay. Left alone it plays the film's script as an auto tour with the
 // operator's cursor, looped; a click, drag, wheel or key hands control to the visitor, 25 s of quiet hands it back.
+import {installFullscreen} from '../kit/fullscreen.js';
 import {warmComposer} from '../kit/warm.js';
 import {CAMS, createConsole, CUTS, OVERLAYS, RPM_MAX} from './console.js';
 import {makeConsoleFrame, makeCursor, rpmAt, trackAt, camAt, camName, DURATION, SCRIPT, VIEW_FN} from './film.js';
@@ -77,6 +78,7 @@ export function runLive() {
   };
   applyTier();
   addEventListener('resize', fit);
+  installFullscreen();
   const toStage = (cx, cy) => {
     const r = app.getBoundingClientRect();
     return [(cx - r.left) / scale, (cy - r.top) / scale];
