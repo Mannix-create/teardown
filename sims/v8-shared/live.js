@@ -4,6 +4,7 @@
 // drag, a zoom on the wheel, H to hide the overlay. Left alone it plays the film's script as an auto tour with the
 // operator's cursor, looped; a click, drag, wheel or key hands control to the visitor, 25 s of quiet hands it back.
 import {installFullscreen} from '../kit/fullscreen.js';
+import {fitRect} from '../kit/safearea.js';
 import {warmComposer} from '../kit/warm.js';
 import {CAMS, createConsole, CUTS, OVERLAYS, RPM_MAX} from './console.js';
 import {makeConsoleFrame, makeCursor, rpmAt, trackAt, camAt, camName, DURATION, SCRIPT, VIEW_FN} from './film.js';
@@ -66,9 +67,10 @@ export function runLive() {
   let tier = light ? 2 : 0;
   let scale = 1;
   const fit = () => {
-    const h = innerHeight - top;
-    scale = Math.min(innerWidth / W, h / H);
-    app.style.transform = `translate(${(innerWidth - W * scale) / 2}px, ${top + (h - H * scale) / 2}px) scale(${scale})`;
+    // Inside the safe area, so rounded corners and the camera cutout never cover a control (kit/safearea.js).
+    const r = fitRect(W, H, top);
+    scale = r.scale;
+    app.style.transform = `translate(${r.x}px, ${r.y}px) scale(${scale})`;
     st.resize(W, H, clamp((devicePixelRatio || 1) * scale, 0.75, TIERS[tier].pr));
   };
   const applyTier = () => {

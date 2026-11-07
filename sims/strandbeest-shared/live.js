@@ -4,6 +4,7 @@
 // drag, wheel or key hands control to the visitor, and 25 s of quiet hands it back. Wind drives the crank here too:
 // theta is integrated frame by frame, and the console reads its last seconds from a short history.
 import {installFullscreen} from '../kit/fullscreen.js';
+import {fitRect} from '../kit/safearea.js';
 import {warmComposer} from '../kit/warm.js';
 import {legAt, legZ, phaseOf, S} from './beast.js';
 import {createConsole, VIEW_KEYS, WIND_MAX} from './console.js';
@@ -75,9 +76,10 @@ export function runLive() {
   // ------------------------------------------------------------ fit the 1600 x 900 console into the window
   let scale = 1;
   const fit = () => {
-    const h = innerHeight - top;
-    scale = Math.min(innerWidth / W, h / H);
-    app.style.transform = `translate(${(innerWidth - W * scale) / 2}px, ${top + (h - H * scale) / 2}px) scale(${scale})`;
+    // Inside the safe area, so rounded corners and the camera cutout never cover a control (kit/safearea.js).
+    const r = fitRect(W, H, top);
+    scale = r.scale;
+    app.style.transform = `translate(${r.x}px, ${r.y}px) scale(${scale})`;
     st.resize(W, H, clamp((devicePixelRatio || 1) * scale, 0.75, TIERS[tier].pr));
   };
   addEventListener('resize', fit);
