@@ -81,6 +81,10 @@ times = [...new Set(times.map((t) => Math.min(Math.max(t, 0), duration - eps).to
   .sort((a, b) => a - b);
 
 const base = video.replace(/\.[^.]+$/, '') + '_sheets';
+if (!/^[\w-][\w.-]*$/.test(name) || name.includes('..')) {
+  console.error(`--name must be a plain folder name (letters, digits, . _ -), got ${JSON.stringify(name)}`);
+  process.exit(1);
+}
 const dir = path.join(base, name);
 fs.rmSync(dir, {recursive: true, force: true});
 fs.mkdirSync(dir, {recursive: true});

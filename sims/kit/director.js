@@ -110,6 +110,9 @@ export function createDirector(app, cfg) {
     };
   };
 
+  // Captions can come from ?config= in the URL, so everything written as HTML is escaped.
+  const esc = (v) => String(v).replace(/[&<>"']/g, (c) => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'})[c]);
+
   // ---- story timing
   const story = (cfg.story || []).map((s, i) => {
     const start = s.at ?? (s.bar != null ? barTime(s.bar) : s.drop != null ? barTime(dropBar + s.drop) : 0);
@@ -234,8 +237,8 @@ export function createDirector(app, cfg) {
       if (built !== cur.i) {
         built = cur.i;
         const words = (cur.text || '').split(/\s+/).filter(Boolean);
-        storyEl.innerHTML = `<div class="cap ${cur.kind || 'hero'}">
-          ${cur.tag ? `<div class="cap-tag">${cur.tag}</div>` : ''}
+        storyEl.innerHTML = `<div class="cap ${cur.kind === 'num' ? 'num' : 'hero'}">
+          ${cur.tag ? `<div class="cap-tag">${esc(cur.tag)}</div>` : ''}
           <div class="cap-main">${
             cur.kind === 'num'
               ? `<span class="w"><span class="n"></span></span>`
@@ -249,7 +252,7 @@ export function createDirector(app, cfg) {
                       if (open) on = true;
                       const hl = on;
                       if (close) on = false;
-                      return `<span class="w${hl ? ' hl' : ''}">${w.replace(/^\*|\*$/g, '')}</span>`;
+                      return `<span class="w${hl ? ' hl' : ''}">${esc(w.replace(/^\*|\*$/g, ''))}</span>`;
                     })
                     .join(' ');
                 })()
