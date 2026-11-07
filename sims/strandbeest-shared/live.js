@@ -23,8 +23,8 @@ const ss = (a, b, t) => smoother((t - a) / (b - a));
 const wrapDeg = (d) => ((((d + 180) % 360) + 360) % 360) - 180;
 
 const CSS = (top) => `
-html,body{background:#e9e2d6;overflow:hidden}
-#app{position:absolute!important;inset:auto!important;left:0;top:0;width:${W}px;height:${H}px;transform-origin:0 0}
+html,body{background:#e9e2d6;overflow:hidden;position:fixed;inset:0;width:100%;height:100%}
+#app{position:fixed!important;inset:auto!important;left:0;top:0;width:${W}px;height:${H}px;transform-origin:0 0}
 #gl{touch-action:none;cursor:grab}
 #gl.drag{cursor:grabbing}
 .vb{pointer-events:auto;cursor:pointer}
