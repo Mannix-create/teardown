@@ -2,6 +2,8 @@
 // start a sequence, the play button pauses it, the timeline scrubs it, SPEED sets its pace; the six views, the six
 // display modes, an orbit you drag and a zoom on the wheel. Left alone it plays the film's script as an auto tour with
 // the operator's cursor, looped; a click, drag, wheel or key hands control to the visitor, 25 s of quiet hands it back.
+import {installFullscreen} from '../kit/fullscreen.js';
+import {fitRect} from '../kit/safearea.js';
 import {warmComposer} from '../kit/warm.js';
 import {createConsole, DISPLAY, VIEWS} from './console.js';
 import {camAt, displayAt, DURATION, makeConsoleFrame, makeCursor, mechAt, SCRIPT, seqAt, viewAt, VIEW_FN} from './film.js';
@@ -24,8 +26,8 @@ const SPEED = [0.1, 2];
 const speedK = (v) => (v - SPEED[0]) / (SPEED[1] - SPEED[0]);
 
 const CSS = (top) => `
-html,body{background:#f2e6d2;overflow:hidden}
-#app{position:absolute!important;inset:auto!important;left:0;top:0;width:${W}px;height:${H}px;transform-origin:0 0}
+html,body{background:#f2e6d2;overflow:hidden;position:fixed;inset:0;width:100%;height:100%}
+#app{position:fixed!important;inset:auto!important;left:0;top:0;width:${W}px;height:${H}px;transform-origin:0 0}
 #gl{touch-action:none;cursor:grab}
 #gl.drag{cursor:grabbing}
 .bt{pointer-events:auto;cursor:pointer}
@@ -63,9 +65,10 @@ export function runLive() {
   let tier = light ? 2 : 0;
   let scale = 1;
   const fit = () => {
-    const h = innerHeight - top;
-    scale = Math.min(innerWidth / W, h / H);
-    app.style.transform = `translate(${(innerWidth - W * scale) / 2}px, ${top + (h - H * scale) / 2}px) scale(${scale})`;
+    // Inside the safe area, so rounded corners and the camera cutout never cover a control (kit/safearea.js).
+    const r = fitRect(W, H, top);
+    scale = r.scale;
+    app.style.transform = `translate(${r.x}px, ${r.y}px) scale(${scale})`;
     st.resize(W, H, clamp((devicePixelRatio || 1) * scale, 0.75, TIERS[tier].pr));
   };
   const applyTier = () => {
@@ -75,6 +78,7 @@ export function runLive() {
   };
   applyTier();
   addEventListener('resize', fit);
+  installFullscreen();
   const toStage = (cx, cy) => {
     const r = app.getBoundingClientRect();
     return [(cx - r.left) / scale, (cy - r.top) / scale];
