@@ -64,6 +64,7 @@ For a machine outside `SKILL_DIR`, make a folder with a `main.js` and import the
 
 - **Test on an integrated GPU.** A page that runs at 60 fps on a desktop card can drop to 15 fps on a laptop's built-in one. The examples carry quality tiers (`TIERS` in `live.js`): no AO, lower pixel ratio, smaller shadow maps, panels redrawn every other frame. Find the expensive shader first: a displacement computed 5 times per vertex costs more than every tier together.
 - **Warm the shaders.** `kit/warm.js` compiles every program in parallel before the first frame, so the page never freezes on first draw.
+- **Desktop first, a simple phone view.** The full page (control panel, gauges, every subsystem button, driving) is built and reviewed for a desktop browser; do not fit it to narrow screens. On a phone (`matchMedia('(pointer: coarse) and (max-width: 900px)')`) show a separate, simple view instead: the auto tour running, a few large buttons (44 px or more) that step through the views, and at most one control for speed. The phone view reads from the same model as the desktop page; it only hides the controls. Review it at 390×844 and landscape 844×390, and spend no more time on it than that.
 - **Keep the page under 1 MB.** Link crawlers (X, Slack) read the share card from the HTML and give up on a 15 MB page. Big models go out as files next to the page: `build.json` → `{"external": {"heavy.glb": "light.glb"}}`.
 
 ## render(t) contract
